@@ -7,6 +7,14 @@ import org.bouncycastle.util.encoders.Hex;
 
 public final class Hashing {
 
+  //Tilføjet
+  private String salt;
+  private static MessageDigest hashing;
+
+  /*Tilføjet
+  public Hashing(){
+    this.salt = "1234";
+  }*/
   // TODO: You should add a salt and make this secure
   public static String md5(String rawString) {
     try {
@@ -24,8 +32,11 @@ public final class Hashing {
       for (int i = 0; i < byteArray.length; ++i) {
         sb.append(Integer.toHexString((byteArray[i] & 0xFF) | 0x100).substring(1, 3));
       }
+      /*Tilføjet
+      return Hashing.performHashing(sb.toString());*/
 
       //Convert back to a single string and return
+
       return sb.toString();
 
     } catch (java.security.NoSuchAlgorithmException e) {
@@ -56,6 +67,27 @@ public final class Hashing {
       e.printStackTrace();
     }
 
+    /*String hashedPassword = rawString + this.salt;
+    return hash(hashedPassword);*/
+
+    /*Tilføjet
+    return Hashing.performHashing(rawString);*/
+
     return rawString;
+  }
+
+  //Tilføjet
+  private static String performHashing(String str){
+    hashing.update(str.getBytes());
+    byte[] hash = hashing.digest();
+    StringBuilder hexString = new StringBuilder();
+    for (byte aHash : hash) {
+      if ((0xff & aHash) < 0x10) {
+        hexString.append("0" + Integer.toHexString((0xFF & aHash)));
+      } else {
+        hexString.append(Integer.toHexString(0xFF & aHash));
+      }
+    }
+    return hexString.toString();
   }
 }
