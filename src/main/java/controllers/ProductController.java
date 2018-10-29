@@ -12,6 +12,7 @@ public class ProductController {
 
   public ProductController() {
     dbCon = new DatabaseController();
+
   }
 
   public static Product getProduct(int id) {
@@ -97,7 +98,7 @@ public class ProductController {
       dbCon = new DatabaseController();
     }
 
-    // TODO: Use caching layer.
+    // TODO: Use caching layer. FIX - ProductEndpoints line 56
     String sql = "SELECT * FROM product";
 
     ResultSet rs = dbCon.query(sql);

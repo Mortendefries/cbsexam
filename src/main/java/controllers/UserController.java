@@ -3,6 +3,8 @@ package controllers;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+
+import cache.UserCache;
 import model.User;
 import utils.Hashing;
 import utils.Log;
@@ -116,7 +118,7 @@ public class UserController {
             + user.getLastname()
             + "', '"
             //Tilføjet - hashing the users password before saving it when a user is created
-            + Hashing.md5(user.getPassword())
+            + Hashing.sha(user.getPassword())
             + "', '"
             + user.getEmail()
             + "', "
