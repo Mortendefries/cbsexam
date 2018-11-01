@@ -11,11 +11,14 @@ public final class Hashing {
   private String salt;
   private static MessageDigest hashing;
 
-  /*Tilføjet
-  public Hashing(){
-    this.salt = "1234";
-  }*/
-  // TODO: You should add a salt and make this secure
+  // TODO: You should add a salt and make this secure FIX
+  //Tilføjet for at tilføje salt til kodeordet i md5
+  public static String md5Salt (String str) {
+    String salt = "dsf89sd8897dsf78ds";
+    String hashedPassword = str + salt;
+    return md5(hashedPassword);
+  }
+
   public static String md5(String rawString) {
     try {
 
@@ -32,8 +35,6 @@ public final class Hashing {
       for (int i = 0; i < byteArray.length; ++i) {
         sb.append(Integer.toHexString((byteArray[i] & 0xFF) | 0x100).substring(1, 3));
       }
-      /*Tilføjet
-      return Hashing.performHashing(sb.toString());*/
 
       //Convert back to a single string and return
 
@@ -48,7 +49,14 @@ public final class Hashing {
     return null;
   }
 
-  // TODO: You should add a salt and make this secure
+  // TODO: You should add a salt and make this secure FIX
+  //Tilføjet for at tilføje salt til kodeordet i sha
+  public static String shaSalt (String str) {
+    String salt = "dsf89sd8897dsf78ds";
+    String hashedPassword = str + salt;
+    return sha(hashedPassword);
+  }
+
   public static String sha(String rawString) {
     try {
       // We load the hashing algoritm we wish to use.

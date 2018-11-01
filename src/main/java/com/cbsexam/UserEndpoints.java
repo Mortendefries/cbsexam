@@ -18,13 +18,8 @@ import utils.Log;
 @Path("user")
 public class UserEndpoints {
 
-  //Tilføjet
-  private UserCache userCache;
-
-  //Tilføjet
-  public UserEndpoints(UserCache userCache){
-    this.userCache = userCache;
-  }
+  //Tilføjet - Opretter en instans af cachen når UserEndpoints bliver initialiseret, hvilket den kun bliver en gang
+  private static UserCache userCache = new UserCache();
 
   /**
    * @param idUser
@@ -56,8 +51,8 @@ public class UserEndpoints {
     // Write to log that we are here
     Log.writeLog(this.getClass().getName(), this, "Get all users", 0);
 
-    //Tilføjet
     // Get a list of users
+    //Tilføjet
     ArrayList<User> users = userCache.getUsers(true);
 
     // TODO: Add Encryption to JSON FIX

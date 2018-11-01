@@ -17,13 +17,8 @@ import utils.Encryption;
 @Path("order")
 public class OrderEndpoints {
 
-  //Tilføjet
-  private OrderCache orderCache;
-
-  //Tilføjet
-  public OrderEndpoints(OrderCache orderCache){
-    this.orderCache = orderCache;
-  }
+  //Tilføjet - Opretter en instans af cachen når OrderEndpoints bliver initialiseret, hvilket den kun bliver en gang
+  private static OrderCache orderCache = new OrderCache();
 
   /**
    * @param idOrder

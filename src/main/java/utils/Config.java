@@ -24,6 +24,8 @@ public final class Config {
   private static long USER_TTL;
   //Tilføjet for at lave OrderCache klassen
   private static long ORDER_TTL;
+  //Tilføjet for gøre encryption mere kompleks - TO DO(11,10)
+  private static String ENCRYPTION_KEY;
 
   public static long getProductTtl() {
     return PRODUCT_TTL;
@@ -41,6 +43,11 @@ public final class Config {
 
   public static String getDatabaseHost() {
     return DATABASE_HOST;
+  }
+
+  //Tilføjet for gøre encryption mere kompleks - TO DO(11,10)
+  public static char[] getEncryptionKey() {
+    return ENCRYPTION_KEY.toCharArray();
   }
 
   public static int getDatabasePort() {
@@ -113,5 +120,7 @@ public final class Config {
     SOLR_PATH = json.get("SOLR_PATH").toString().replace("\"", "");
     SOLR_CORE = json.get("SOLR_CORE").toString().replace("\"", "");
     PRODUCT_TTL = json.get("PRODUCT_TTL").getAsLong();
+    //Tilføjet for gøre encryption mere kompleks - TO DO(11,10)
+    ENCRYPTION_KEY = json.get("ENCRYPTION_KEY").getAsString();
   }
 }

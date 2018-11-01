@@ -17,13 +17,9 @@ import utils.Encryption;
 @Path("product")
 public class ProductEndpoints {
 
-  //Tilføjet
-  private ProductCache productCache;
+  //Tilføjet - Opretter en instans af cachen når ProductEndpoints bliver initialiseret, hvilket den kun bliver en gang
+  private static ProductCache productCache = new ProductCache();
 
-  //Tilføjet
-  public ProductEndpoints(ProductCache productCache){
-    this.productCache = productCache;
-  }
 
   /**
    * @param idProduct
