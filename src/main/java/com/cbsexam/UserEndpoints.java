@@ -4,11 +4,7 @@ import cache.UserCache;
 import com.google.gson.Gson;
 import controllers.UserController;
 import java.util.ArrayList;
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import model.User;
@@ -52,8 +48,7 @@ public class UserEndpoints {
     Log.writeLog(this.getClass().getName(), this, "Get all users", 0);
 
     // Get a list of users
-    //Tilføjet
-    ArrayList<User> users = userCache.getUsers(true);
+    ArrayList<User> users = userCache.getUsers(false);
 
     // TODO: Add Encryption to JSON FIX
     // Transfer users to json in order to return it to the user
@@ -97,17 +92,40 @@ public class UserEndpoints {
     return Response.status(400).entity("Endpoint not implemented yet").build();
   }
 
-  // TODO: Make the system able to delete users
-  public Response deleteUser(String x) {
+  // TODO: Make the system able to delete users FIX
+  @DELETE
+  @Path("/delete/{idUser}")
+  public Response deleteUser(@PathParam("idUser") int id) {
 
-    // Return a response with status 200 and JSON as type
-    return Response.status(400).entity("Endpoint not implemented yet").build();
+    //Added - Deletes a user by its id
+    Boolean delete = UserController.delete(id);
+
+    //Added - We got to update out ArrayList because we have deleted a user
+    userCache.getUsers(true);
+
+    //Added
+    if(delete)
+    {
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("Deleted the user with the id: " + id).build();
+    } else
+    {
+      // Return a response with status 200 and JSON as type
+      return Response.status(400).entity("The user was not found").build();
+    }
   }
 
   // TODO: Make the system able to update users
-  public Response updateUser(String x) {
+  @POST
+  @Path("/update/{idUser}")
+  public Response updateUser(@PathParam("idUser") int id) {
+
+    //Added - Updates a user by its id
+    UserController.update(id);
+
+    //Added - We got to update out ArrayList because we have updated a user
+    userCache.getUsers(true);
 
     // Return a response with status 200 and JSON as type
-    return Response.status(400).entity("Endpoint not implemented yet").build();
+    return Response.status(400).entity("Updated the user with id: " + id).build();
   }
 }

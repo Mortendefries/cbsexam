@@ -60,7 +60,6 @@ public class DatabaseController {
     if (connection == null)
       connection = getConnection();
 
-
     // We set the resultset as empty.
     ResultSet rs = null;
 
@@ -109,5 +108,26 @@ public class DatabaseController {
 
     // Return the resultset which at this point will be null
     return result;
+  }
+
+  //Added - Makes it possible to delete and update from the database
+  public boolean deleteUpdate(String sqlStatement)
+  {
+    // Check if we have a connection
+    if (connection == null)
+      connection = getConnection();
+
+    try{
+      PreparedStatement deleteUpdate = connection.prepareStatement(sqlStatement);
+
+      deleteUpdate.executeUpdate();
+
+      return true;
+    }
+    catch (SQLException e){
+      e.printStackTrace();
+
+      return false;
+    }
   }
 }
