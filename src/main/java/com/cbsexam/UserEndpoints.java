@@ -9,6 +9,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import model.User;
 import utils.Encryption;
+import utils.Hashing;
 import utils.Log;
 
 @Path("user")
@@ -87,7 +88,20 @@ public class UserEndpoints {
   @POST
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
-  public Response loginUser(String x) {
+  public Response loginUser(String body) {
+
+    //Added - Creating an instans with the user that is typed in
+    User loginUser = new Gson().fromJson(body, User.class);
+
+    //Added - Creating an ArrayList with users
+    ArrayList<User> users =userCache.getUsers(false);
+
+    for (User user : users) {
+      if(user.getEmail().equals(loginUser.getEmail()) && user.getPassword().equals(Hashing.shaSalt(loginUser.getPassword()))) {
+        return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("The user is logged in").build();
+      }
+    }
+
     // Return a response with status 200 and JSON as type
     return Response.status(400).entity("Endpoint not implemented yet").build();
   }
@@ -100,32 +114,38 @@ public class UserEndpoints {
     //Added - Deletes a user by its id
     Boolean delete = UserController.delete(id);
 
-    //Added - We got to update out ArrayList because we have deleted a user
+    //Added - We got to update our ArrayList because we have deleted a user
     userCache.getUsers(true);
 
     //Added
     if(delete)
     {
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("Deleted the user with the id: " + id).build();
-    } else
-    {
+    } else {
       // Return a response with status 200 and JSON as type
       return Response.status(400).entity("The user was not found").build();
     }
   }
 
-  // TODO: Make the system able to update users
+  // TODO: Make the system able to update users FIX
   @POST
   @Path("/update/{idUser}")
-  public Response updateUser(@PathParam("idUser") int id) {
+  public Response updateUser(@PathParam("idUser") int id, String body) {
 
-    //Added - Updates a user by its id
-    UserController.update(id);
+    //Added - Takes the writin update and converts it from Json
+    User user = new Gson().fromJson(body, User.class);
 
-    //Added - We got to update out ArrayList because we have updated a user
+    Boolean update = UserController.update(user, id);
+
+    //Added - We got to update our ArrayList because we have updated a user
     userCache.getUsers(true);
 
-    // Return a response with status 200 and JSON as type
-    return Response.status(400).entity("Updated the user with id: " + id).build();
+    if(update) {
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("Updated the user with the id: " + id).build();
+    } else
+    {
+      // Return a response with status 200 and JSON as type
+      return Response.status(400).entity("The user was not found").build();
+    }
   }
 }

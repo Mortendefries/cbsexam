@@ -119,7 +119,7 @@ public class UserController {
             + user.getLastname()
             + "', '"
             //Tilføjet - hashing the users password before saving it when a user is created
-            + Hashing.sha(user.getPassword())
+            + Hashing.shaSalt(user.getPassword())
             + "', '"
             + user.getEmail()
             + "', "
@@ -157,22 +157,36 @@ public class UserController {
       dbCon.deleteUpdate("DELETE FROM user WHERE id =" + id);
 
       return true;
+
     } else {
       return false;
     }
   }
 
   //Added - Updating af user in the database
-  public static void update(int id)
+  public static boolean update(User user ,int id)
   {
     // Write in log that we've reach this step
-    Log.writeLog(UserController.class.getName(), id, "Updated a user in DB", 0);
+    Log.writeLog(UserController.class.getName(), id, "Updating a user in DB", 0);
 
     // Check for DB Connection
-    if (dbCon == null) {
+    if (dbCon == null)
+    {
       dbCon = new DatabaseController();
     }
 
-    dbCon.deleteUpdate("UPDATE FROM user WHERE id=" + id);
+    if (user != null)
+    {
+      dbCon.deleteUpdate("UPDATE user SET first_name ='" + user.getFirstname() +
+      "', last_name ='" + user.getLastname() +
+      "', email ='" + user.getEmail() +
+      "', password ='" + user.getPassword() +
+      "'where id=" + id);
+
+      return true;
+
+    } else {
+      return false;
+    }
   }
 }
