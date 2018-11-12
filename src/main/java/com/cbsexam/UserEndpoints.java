@@ -9,7 +9,6 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import model.User;
 import utils.Encryption;
-import utils.Hashing;
 import utils.Log;
 
 @Path("user")
@@ -90,26 +89,26 @@ public class UserEndpoints {
   @Consumes(MediaType.APPLICATION_JSON)
   public Response loginUser(String body) {
 
-    //Added - Creating an instans with the user that is typed in
     User loginUser = new Gson().fromJson(body, User.class);
 
-    //Added - Creating an ArrayList with users
-    ArrayList<User> users =userCache.getUsers(false);
+    String token = UserController.login(loginUser);
 
-    for (User user : users) {
-      if(user.getEmail().equals(loginUser.getEmail()) && user.getPassword().equals(Hashing.shaSalt(loginUser.getPassword()))) {
-        return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("The user is logged in").build();
-      }
+    if (token != null) {
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("The user is logged in\nThe users token is: " + token).build();
     }
-
-    // Return a response with status 200 and JSON as type
-    return Response.status(400).entity("Endpoint not implemented yet").build();
+    else {
+      return Response.status(400).entity("The user is logged in").build();
+    }
   }
 
   // TODO: Make the system able to delete users FIX
   @DELETE
   @Path("/delete/{idUser}")
-  public Response deleteUser(@PathParam("idUser") int id) {
+  public Response deleteUser(@PathParam("idUser") int id, String body, User user) {
+    /*User deleteUser = new Gson().fromJson(body, User.class);
+
+    if (deleteUser.getToken().equals(user.getToken())) {
+    }*/
 
     //Added - Deletes a user by its id
     Boolean delete = UserController.delete(id);

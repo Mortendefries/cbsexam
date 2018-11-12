@@ -1,14 +1,18 @@
 package controllers;
 
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import cache.UserCache;
 import model.User;
 import utils.Hashing;
 import utils.Log;
+
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTCreationException;
 
 public class UserController {
 
@@ -156,6 +160,7 @@ public class UserController {
 
       dbCon.deleteUpdate("DELETE FROM user WHERE id =" + id);
 
+
       return true;
 
     } else {
@@ -189,4 +194,47 @@ public class UserController {
       return false;
     }
   }
+
+  public static String login(User loginUser)
+  {
+
+    Log.writeLog(UserController.class.getName(), loginUser, "Logging in a user", 0);
+
+    // Check for DB Connection
+    if (dbCon == null)
+    {
+      dbCon = new DatabaseController();
+    }
+
+    UserCache userCache = new UserCache();
+
+    ArrayList<User> users = userCache.getUsers(false);
+
+    Timestamp timestamp = new Timestamp(System.currentTimeMillis());
+
+    for (User user : users)
+    {
+      if (user.getEmail().equals(loginUser.getEmail()) && user.getPassword().equals(Hashing.shaSalt(loginUser.getPassword())))
+      {
+
+        try
+        {
+          Algorithm algorithm = Algorithm.HMAC256("JWT_token_secret_key_mdfd");
+
+          //Added - Makes sure that a new token is created every time a user is logged in
+          String token = JWT.create().withClaim("test", timestamp).sign(algorithm);
+
+          return token;
+
+        } catch (JWTCreationException exception)
+        {
+          //Invalid Signing configuration / Couldn't convert Claims.
+          exception.getMessage();
+        }
+      }
+    }
+
+    return null;
+  }
+
 }
