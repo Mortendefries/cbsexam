@@ -1,6 +1,7 @@
 package com.cbsexam;
 
 import cache.UserCache;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.gson.Gson;
 import controllers.UserController;
 import java.util.ArrayList;
@@ -83,7 +84,7 @@ public class UserEndpoints {
     }
   }
 
-  // TODO: Make the system able to login users and assign them a token to use throughout the system.
+  // TODO: Make the system able to login users and assign them a token to use throughout the system. FIX
   @POST
   @Path("/login")
   @Consumes(MediaType.APPLICATION_JSON)
@@ -94,7 +95,7 @@ public class UserEndpoints {
     String token = UserController.login(loginUser);
 
     if (token != null) {
-      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("The user is logged in\nThe users token is: " + token).build();
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("The user is logged in\n" + token).build();
     }
     else {
       return Response.status(400).entity("The user is logged in").build();
@@ -104,26 +105,23 @@ public class UserEndpoints {
   // TODO: Make the system able to delete users FIX
   @DELETE
   @Path("/delete/{idUser}")
-  public Response deleteUser(@PathParam("idUser") int id, String body, User user) {
-    /*User deleteUser = new Gson().fromJson(body, User.class);
+  public Response deleteUser(@PathParam("idUser") int id, String body) {
 
-    if (deleteUser.getToken().equals(user.getToken())) {
-    }*/
+    DecodedJWT token = UserController.verifier(body);
 
-    //Added - Deletes a user by its id
-    Boolean delete = UserController.delete(id);
-
-    //Added - We got to update our ArrayList because we have deleted a user
-    userCache.getUsers(true);
+    Boolean delete = UserController.delete(token.getClaim("test").asInt());
 
     //Added
-    if(delete)
-    {
-      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("Deleted the user with the id: " + id).build();
-    } else {
+    if(delete) {
+      //Added - We got to update our ArrayList because we have deleted a user
+      userCache.getUsers(true);
+
       // Return a response with status 200 and JSON as type
-      return Response.status(400).entity("The user was not found").build();
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("Deleted the user with the id: " + id).build();
     }
+
+      return Response.status(400).entity("The user was not found").build();
+
   }
 
   // TODO: Make the system able to update users FIX

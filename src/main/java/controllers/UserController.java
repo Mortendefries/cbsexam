@@ -6,6 +6,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import cache.UserCache;
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import model.User;
 import utils.Hashing;
 import utils.Log;
@@ -157,7 +160,6 @@ public class UserController {
 
     if (user != null)
     {
-
       dbCon.deleteUpdate("DELETE FROM user WHERE id =" + id);
 
 
@@ -219,19 +221,44 @@ public class UserController {
 
         try
         {
-          Algorithm algorithm = Algorithm.HMAC256("JWT_token_secret_key_mdfd");
+          Algorithm algorithm = Algorithm.HMAC256("JWT_token_key");
 
           //Added - Makes sure that a new token is created every time a user is logged in
-          String token = JWT.create().withClaim("test", timestamp).sign(algorithm);
+          String token = JWT.create().withIssuer("auth0").withClaim("test", user.getId()).withClaim("JWT_token_key_test", timestamp).sign(algorithm);
+
+          user.setToken(token);
 
           return token;
 
-        } catch (JWTCreationException exception)
+        } catch (JWTCreationException e)
         {
           //Invalid Signing configuration / Couldn't convert Claims.
-          exception.getMessage();
+          e.getMessage();
         }
       }
+    }
+
+    return null;
+  }
+
+  public static DecodedJWT verifier(String user) {
+
+    Log.writeLog(UserController.class.getName(), user, "Verifying a token", 0);
+
+    String token = user;
+
+    try {
+      Algorithm algorithm = Algorithm.HMAC256("JWT_token_key");
+      //Reusable verifier instance
+      JWTVerifier verifier = JWT.require(algorithm).withIssuer("auth0").build();
+      DecodedJWT jwt = verifier.verify(token);
+
+      return jwt;
+    }
+
+    catch (JWTVerificationException e) {
+      //Invalid claims
+      e.getMessage();
     }
 
     return null;
