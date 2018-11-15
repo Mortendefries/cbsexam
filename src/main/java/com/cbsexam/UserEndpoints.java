@@ -77,6 +77,7 @@ public class UserEndpoints {
 
     // Return the data to the user
     if (createUser != null) {
+      userCache.getUsers(true);
       // Return a response with status 200 and JSON as type
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
     } else {
@@ -98,7 +99,7 @@ public class UserEndpoints {
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("The user is logged in\n" + token).build();
     }
     else {
-      return Response.status(400).entity("The user is logged in").build();
+      return Response.status(400).entity("Unsuccesful login due to an incorrect email og password").build();
     }
   }
 
@@ -120,7 +121,7 @@ public class UserEndpoints {
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("Deleted the user with the id: " + id).build();
     }
 
-      return Response.status(400).entity("The user was not found").build();
+      return Response.status(400).entity("Unsuccesful delete possible due to an incorrect id or  token").build();
 
   }
 
@@ -128,6 +129,10 @@ public class UserEndpoints {
   @POST
   @Path("/update/{idUser}")
   public Response updateUser(@PathParam("idUser") int id, String body) {
+
+    /*DecodedJWT token = UserController.verifier(body);
+
+    Boolean delete = UserController.delete(token.getClaim("test").asInt());*/
 
     //Added - Takes the writin update and converts it from Json
     User user = new Gson().fromJson(body, User.class);
