@@ -119,7 +119,7 @@ public class OrderController {
   public static Order createOrder(Order order) {
 
     // Write in log that we've reach this step
-    Log.writeLog(OrderController.class.getName(), order, "Actually creating a order in DB", 0);
+    Log.writeLog(OrderController.class.getName(), order, "Actually creating an order in DB", 0);
 
     // Set creation and updated time for order.
     order.setCreatedAt(System.currentTimeMillis() / 1000L);
@@ -130,22 +130,22 @@ public class OrderController {
       dbCon = new DatabaseController();
     }
 
-    // Save addresses to database and save them back to initial order instance
-    order.setBillingAddress(AddressController.createAddress(order.getBillingAddress()));
-    order.setShippingAddress(AddressController.createAddress(order.getShippingAddress()));
-
-    // Save the user to the database and save them back to initial order instance
-    order.setCustomer(UserController.createUser(order.getCustomer()));
-
     // TODO: Enable transactions in order for us to not save the order if somethings fails for some of the other inserts. FIX
 
     //Added
-    Connection connection = null;
+    Connection connection = DatabaseController.getConnection();
 
     try
     {
       //Added - Makes sure that updates does'nt gets committed automatically
       connection.setAutoCommit(false);
+
+      // Save addresses to database and save them back to initial order instance
+      order.setBillingAddress(AddressController.createAddress(order.getBillingAddress()));
+      order.setShippingAddress(AddressController.createAddress(order.getShippingAddress()));
+
+      // Save the user to the database and save them back to initial order instance
+      order.setCustomer(UserController.createUser(order.getCustomer()));
 
       // Insert the product in the DB
       int orderID = dbCon.insert(

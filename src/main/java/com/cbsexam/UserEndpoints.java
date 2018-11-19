@@ -37,7 +37,12 @@ public class UserEndpoints {
 
     // Return the user with the status code 200
     // TODO: What should happen if something breaks down?
-    return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
+
+    if (user != null) {
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
+    } else {
+      return Response.status(400).entity("Could not get users").build();
+    }
   }
 
   /** @return Responses */
@@ -57,8 +62,11 @@ public class UserEndpoints {
     //Tilføjet
     json = Encryption.encryptDecryptXOR(json);
 
-    // Return the users with the status code 200
-    return Response.status(200).type(MediaType.APPLICATION_JSON).entity(json).build();
+    if (users != null) {
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
+    } else {
+      return Response.status(400).entity("Could not get users").build();
+    }
   }
 
   @POST
@@ -127,17 +135,15 @@ public class UserEndpoints {
 
   // TODO: Make the system able to update users FIX
   @POST
-  @Path("/update/{idUser}")
-  public Response updateUser(@PathParam("idUser") int id, String body) {
+  @Path("/update/{idUser}/{token}")
+  public Response updateUser(@PathParam("idUser") int id, @PathParam("token") String token, String body) {
 
-    /*DecodedJWT token = UserController.verifier(body);
-
-    Boolean delete = UserController.delete(token.getClaim("test").asInt());*/
-
-    //Added - Takes the writin update and converts it from Json
+    //Added - Takes the writing update and converts it from Json
     User user = new Gson().fromJson(body, User.class);
 
-    Boolean update = UserController.update(user, id);
+    DecodedJWT jwt = UserController.verifier(token);
+
+    Boolean update = UserController.update(user, jwt.getClaim("test").asInt());
 
     //Added - We got to update our ArrayList because we have updated a user
     userCache.getUsers(true);

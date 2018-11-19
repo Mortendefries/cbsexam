@@ -162,7 +162,6 @@ public class UserController {
     {
       dbCon.deleteUpdate("DELETE FROM user WHERE id =" + id);
 
-
       return true;
 
     } else {
@@ -187,7 +186,7 @@ public class UserController {
       dbCon.deleteUpdate("UPDATE user SET first_name ='" + user.getFirstname() +
       "', last_name ='" + user.getLastname() +
       "', email ='" + user.getEmail() +
-      "', password ='" + user.getPassword() +
+      "', password ='" + Hashing.shaSalt(user.getPassword()) +
       "'where id=" + id);
 
       return true;
