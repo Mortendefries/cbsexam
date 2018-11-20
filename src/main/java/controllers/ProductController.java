@@ -147,12 +147,13 @@ public class ProductController {
             + "', '"
             + product.getPrice()
             + "', '"
+                // Added - 3 "'" is added
             + product.getDescription()
-            + "', "
+            + "', '"
             + product.getStock()
-            + "', "
+            + "', '"
             + product.getCreatedTime()
-            + ")");
+            + "')");
 
     if (productID != 0) {
       //Update the productid of the product before returning
