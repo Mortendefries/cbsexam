@@ -118,19 +118,27 @@ public class UserEndpoints {
 
     DecodedJWT token = UserController.verifier(body);
 
-    Boolean delete = UserController.delete(token.getClaim("test").asInt());
+    if (token.getClaim("test").asInt() == id)
+    {
 
-    //Added
-    if(delete) {
-      //Added - We got to update our ArrayList because we have deleted a user
-      userCache.getUsers(true);
+      Boolean delete = UserController.delete(token.getClaim("test").asInt());
 
-      // Return a response with status 200 and JSON as type
-      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("Deleted the user with the id: " + id).build();
+
+      //Added
+      if (delete)
+      {
+        //Added - We got to update our ArrayList because we have deleted a user
+        userCache.getUsers(true);
+
+        // Return a response with status 200 and JSON as type
+        return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("Deleted the user with the id: " + id).build();
+      }
+
+      return Response.status(400).entity("The user was not found").build();
     }
-
-      return Response.status(400).entity("Unsuccesful delete possible due to an incorrect id or  token").build();
-
+    else {
+      return Response.status(400).entity("No user is found with the typed in id and token").build();
+    }
   }
 
   // TODO: Make the system able to update users FIX
