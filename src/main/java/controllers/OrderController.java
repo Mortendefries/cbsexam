@@ -18,14 +18,87 @@ public class OrderController {
     dbCon = new DatabaseController();
   }
 
-  public static Order getOrder(int id) {
+  public static Order getOrder(int id)
+  {
 
-    // check for connection
-    if (dbCon == null) {
+    // Check for connection
+    if (dbCon == null)
+    {
       dbCon = new DatabaseController();
     }
 
     // Build SQL string to query
+    String sql = "SELECT *, billing.street_address as billing, shipping.street_address as shipping\n " +
+            "FROM orders\n " +
+            "JOIN user on orders.user_id = user.id\n " +
+            "LEFT JOIN address as billing\n " +
+            "ON orders.billing_address_id = billing.id\n " +
+            "LEFT JOIN address as shipping\n " +
+            "ON orders.shipping_address_id = shipping.id\n " +
+            "WHERE orders.id " + id;
+
+    // Do the query in the database and create an empty object for the results
+    ResultSet rs = dbCon.query(sql);
+    Order order = null;
+
+    try
+    {
+      if (rs.next())
+      {
+        ArrayList<LineItem> lineItems = LineItemController.getLineItemsForOrder(rs.getInt("id"));
+
+        User user = new User(
+                rs.getInt("id"),
+                rs.getString("first_name"),
+                rs.getString("last_name"),
+                rs.getString("password"),
+                rs.getString("email"),
+                rs.getLong("created_at")
+        );
+
+        Address billingAddress = new Address(
+                rs.getInt("billing_address_id"),
+                rs.getString("name"),
+                rs.getString("billing"),
+                rs.getString("city"),
+                rs.getString("zipcode")
+        );
+
+        Address shippingAddress = new Address(
+                rs.getInt("shipping_address_id"),
+                rs.getString("name"),
+                rs.getString("shipping"),
+                rs.getString("city"),
+                rs.getString("zipcode")
+        );
+
+        // Create an objeect instance of order from tbe DB data
+        order = new Order(
+                rs.getInt("id"),
+                user,
+                lineItems,
+                billingAddress,
+                shippingAddress,
+                rs.getFloat("order_total"),
+                rs.getLong("created_at"),
+                rs.getLong("updated_at")
+        );
+
+        // Returns the build order
+        return order;
+      } else
+      {
+        System.out.println("No order found");
+      }
+    } catch (SQLException e)
+    {
+      System.out.println(e.getMessage());
+    }
+
+    return order;
+  }
+
+    /*// Build SQL string to query
     String sql = "SELECT * FROM orders where id=" + id;
 
     // Do the query in the database and create an empty object for the results
@@ -41,7 +114,7 @@ public class OrderController {
         Address billingAddress = AddressController.getAddress(rs.getInt("billing_address_id"));
         Address shippingAddress = AddressController.getAddress(rs.getInt("shipping_address_id"));
 
-        // Create an object instance of order from the database dataa
+        // Create an object instance of order from the database data
         order =
             new Order(
                 rs.getInt("id"),
@@ -63,8 +136,7 @@ public class OrderController {
     }
 
     // Returns null
-    return order;
-  }
+    return order;*/
 
   /**
    * Get all orders in database
@@ -77,7 +149,73 @@ public class OrderController {
       dbCon = new DatabaseController();
     }
 
-    //Tilføjet - Ændret navnet så det er det samme som i MySQL
+    // Build SQL string to query
+    String sql = "SELECT *, billing.street_address as billing, shipping.street_address as shipping\n " +
+            "FROM orders\n " +
+            "JOIN user on orders.user_id = user.id\n " +
+            "LEFT JOIN address as billing\n " +
+            "ON orders.billing_address_id = billing.id\n " +
+            "LEFT JOIN address as shipping\n " +
+            "ON orders.shipping_address_id = shipping.id\n ";
+
+    // Do the query in the database and create an empty object for the results
+    ResultSet rs = dbCon.query(sql);
+    ArrayList<Order> orders =new ArrayList<>();
+
+    try
+    {
+      while (rs.next())
+      {
+        ArrayList<LineItem> lineItems = LineItemController.getLineItemsForOrder(rs.getInt("id"));
+
+        User user = new User(
+                rs.getInt("id"),
+                rs.getString("first_name"),
+                rs.getString("last_name"),
+                rs.getString("password"),
+                rs.getString("email"),
+                rs.getLong("created_at")
+        );
+
+        Address billingAddress = new Address(
+                rs.getInt("billing_address_id"),
+                rs.getString("name"),
+                rs.getString("billing"),
+                rs.getString("city"),
+                rs.getString("zipcode")
+        );
+
+        Address shippingAddress = new Address(
+                rs.getInt("shipping_address_id"),
+                rs.getString("name"),
+                rs.getString("shipping"),
+                rs.getString("city"),
+                rs.getString("zipcode")
+        );
+
+        // Create an objeect instance of order from tbe DB data
+        Order order = new Order(
+                rs.getInt("id"),
+                user,
+                lineItems,
+                billingAddress,
+                shippingAddress,
+                rs.getFloat("order_total"),
+                rs.getLong("created_at"),
+                rs.getLong("updated_at")
+        );
+
+        // Adds an order to our ArrayList
+        orders.add(order);
+      }
+    } catch (SQLException e)
+    {
+      System.out.println(e.getMessage());
+    }
+
+    return orders;
+
+    /*//Added - Changed the name from "order" to "orders" to make it the same as in the DB
     String sql = "SELECT * FROM orders";
 
     ResultSet rs = dbCon.query(sql);
@@ -113,7 +251,7 @@ public class OrderController {
     }
 
     // return the orders
-    return orders;
+    return orders;*/
   }
 
   public static Order createOrder(Order order) {
@@ -132,7 +270,7 @@ public class OrderController {
 
     // TODO: Enable transactions in order for us to not save the order if somethings fails for some of the other inserts. FIX
 
-    //Added
+    //Added - To create a connection to the DB
     Connection connection = DatabaseController.getConnection();
 
     try
@@ -192,7 +330,7 @@ public class OrderController {
 
         System.out.println("Rollback");
 
-        //Added - If a rollback isn't possible, i use this catch to print a message about it
+        //Added - If a rollback isn't possible, i will use this catch to print a message about it
       } catch (SQLException e2) {
         System.out.println("No rollback" + e2.getMessage());
         //Added - A finally block is added to make sure that the autocommit is changed back to true

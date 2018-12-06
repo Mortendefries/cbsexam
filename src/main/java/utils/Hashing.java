@@ -37,7 +37,6 @@ public final class Hashing {
       }
 
       //Convert back to a single string and return
-
       return sb.toString();
 
     } catch (java.security.NoSuchAlgorithmException e) {
@@ -50,7 +49,7 @@ public final class Hashing {
   }
 
   // TODO: You should add a salt and make this secure FIX
-  //Tilføjet for at tilføje salt til kodeordet i sha
+  //Added - To add salt to the password in sha
   public static String shaSalt (String str) {
     String salt = "dsf89sd8897dsf78ds";
     String hashedPassword = str + salt;
@@ -82,20 +81,5 @@ public final class Hashing {
     return Hashing.performHashing(rawString);*/
 
     return rawString;
-  }
-
-  //Tilføjet
-  private static String performHashing(String str){
-    hashing.update(str.getBytes());
-    byte[] hash = hashing.digest();
-    StringBuilder hexString = new StringBuilder();
-    for (byte aHash : hash) {
-      if ((0xff & aHash) < 0x10) {
-        hexString.append("0" + Integer.toHexString((0xFF & aHash)));
-      } else {
-        hexString.append(Integer.toHexString(0xFF & aHash));
-      }
-    }
-    return hexString.toString();
   }
 }

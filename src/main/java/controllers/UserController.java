@@ -48,9 +48,10 @@ public class UserController {
                 rs.getString("first_name"),
                 rs.getString("last_name"),
                 rs.getString("password"),
-                rs.getString("email"));
+                rs.getString("email"),
+                rs.getLong("created_at"));
 
-        // return the create object
+        // Return the create object
         return user;
       } else {
         System.out.println("No user found");
@@ -91,7 +92,8 @@ public class UserController {
                 rs.getString("first_name"),
                 rs.getString("last_name"),
                 rs.getString("password"),
-                rs.getString("email"));
+                rs.getString("email"),
+                rs.getLong("created_at"));
 
         // Add element to list
         users.add(user);
@@ -125,7 +127,7 @@ public class UserController {
             + "', '"
             + user.getLastname()
             + "', '"
-            //Tilføjet - hashing the users password before saving it when a user is created
+            //Added - Hashing the users password before saving it when a user is created
             + Hashing.shaSalt(user.getPassword())
             + "', '"
             + user.getEmail()
@@ -240,6 +242,7 @@ public class UserController {
     return null;
   }
 
+  //Added - Makes it possible to verify a user through a token
   public static DecodedJWT verifier(String user) {
 
     Log.writeLog(UserController.class.getName(), user, "Verifying a token", 0);

@@ -20,23 +20,23 @@ public final class Config {
   private static String SOLR_PATH;
   private static String SOLR_CORE;
   private static long PRODUCT_TTL;
-  //Tilføjet for at lave UserCache klassen
+  //Added - To make UserCache possible
   private static long USER_TTL;
-  //Tilføjet for at lave OrderCache klassen
+  //Added - To make OrderCache possible
   private static long ORDER_TTL;
-  //Tilføjet for gøre encryption mere kompleks - TO DO(11,10)
+  //Added - Makes the encryption more complex - TO DO(11,10)
   private static String ENCRYPTION_KEY;
 
   public static long getProductTtl() {
     return PRODUCT_TTL;
   }
 
-  //Tilføjet for at lave UserCache klassen
+  //Added - To make UserCache possible
   public static long getUserTtl(){
     return USER_TTL;
   }
 
-  //Tilføjet for at lave OrderCache klassen
+  //Added - To make OrderCache possible
   public static long getOrderTtl(){
     return ORDER_TTL;
   }
@@ -45,7 +45,7 @@ public final class Config {
     return DATABASE_HOST;
   }
 
-  //Tilføjet for gøre encryption mere kompleks - TO DO(11,10)
+  //Added - Makes the encryption more complex - TO DO(11,10)
   public static char[] getEncryptionKey() {
     return ENCRYPTION_KEY.toCharArray();
   }
@@ -105,7 +105,7 @@ public final class Config {
       stringBuffer.append(str);
     }
 
-    // Konverterer json til variabler ved at typecaste til JsonObject
+    //Konverterer json til variabler ved at typecaste til JsonObject
     json = (JsonObject) parser.parse(stringBuffer.toString());
 
     // Hiv teksten ud og sæt klassens variable til senere brug
@@ -120,7 +120,7 @@ public final class Config {
     SOLR_PATH = json.get("SOLR_PATH").toString().replace("\"", "");
     SOLR_CORE = json.get("SOLR_CORE").toString().replace("\"", "");
     PRODUCT_TTL = json.get("PRODUCT_TTL").getAsLong();
-    //Tilføjet for gøre encryption mere kompleks - TO DO(11,10)
+    //Added - Makes the encryption more complex - TO DO(11,10)
     ENCRYPTION_KEY = json.get("ENCRYPTION_KEY").getAsString();
   }
 }

@@ -17,7 +17,7 @@ public class ProductController {
 
   public static Product getProduct(int id) {
 
-    // check for connection
+    // Check for connection
     if (dbCon == null) {
       dbCon = new DatabaseController();
     }
@@ -109,7 +109,7 @@ public class ProductController {
         Product product =
             new Product(
                 rs.getInt("id"),
-                //Tilføjet - Ændret navnet så det er det samme som i MySQL
+                //Added - Changed the so it is the same as in the DB
                 rs.getString("product_name"),
                 rs.getString("sku"),
                 rs.getFloat("price"),

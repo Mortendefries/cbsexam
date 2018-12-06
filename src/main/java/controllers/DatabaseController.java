@@ -23,7 +23,7 @@ public class DatabaseController {
    */
   public static Connection getConnection() {
     try {
-      // Set the dataabase connect with the data from the config
+      // Set the database connect with the data from the config
       String url =
           "jdbc:mysql://"
               + Config.getDatabaseHost()
@@ -39,7 +39,7 @@ public class DatabaseController {
       // Register the driver in order to use it
       DriverManager.registerDriver(new com.mysql.jdbc.Driver());
 
-      // create a connection to the database
+      // Create a connection to the database
       connection = DriverManager.getConnection(url, user, password);
 
     } catch (SQLException e) {
@@ -60,7 +60,7 @@ public class DatabaseController {
     if (connection == null)
       connection = getConnection();
 
-    // We set the resultset as empty.
+    // We set the resultset as empty
     ResultSet rs = null;
 
     try {
