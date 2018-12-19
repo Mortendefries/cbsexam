@@ -112,7 +112,7 @@ public class UserEndpoints {
     /*Added - Checks if the user has a token value (if a token is assigned above), if so the user is then logged in
     and a token is send - UserEndpoints TO DO(101,6)*/
     if (token != null) {
-      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity("The user is logged in\n" + token).build();
+      return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(token).build();
     }
     else {
       return Response.status(400).entity("Unsuccesful login due to an incorrect email og password").build();
