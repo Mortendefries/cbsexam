@@ -17,7 +17,8 @@ import utils.Encryption;
 @Path("product")
 public class ProductEndpoints {
 
-  //Tilføjet - Opretter en instans af cachen når ProductEndpoints bliver initialiseret, hvilket den kun bliver en gang
+  /*Added - Creates an instance of the cache when ProductEndpoint is initialized, which is only happening once -
+  ProductController TO DO(101,8)*/
   private static ProductCache productCache = new ProductCache();
 
 
@@ -35,7 +36,7 @@ public class ProductEndpoints {
     // TODO: Add Encryption to JSON FIX
     // We convert the java object to json with GSON library imported in Maven
     String json = new Gson().toJson(product);
-    //Tilføjet
+    //Added - Makes the product information encrypted - ProductEndpoints TO DO (36,8)
     json = Encryption.encryptDecryptXOR(json);
 
     // Return a response with status 200 and JSON as type
@@ -47,14 +48,13 @@ public class ProductEndpoints {
   @Path("/")
   public Response getProducts() {
 
-    //Tilføjet "productCache.getProducts(true);
-    // Call our controller-layer in order to get the order from the DB
-    ArrayList<Product> products = productCache.getProducts(true);
+    //Added - Instead of creating a connection to the DB i use my cache - ProductController TO DO(101,8)
+    ArrayList<Product> products = productCache.getProducts(false);
 
     // TODO: Add Encryption to JSON FIX
     // We convert the java object to json with GSON library imported in Maven
     String json = new Gson().toJson(products);
-    //Tilføjet
+    //Added - Makes the product information encrypted - ProductEndpoints TO DO (54,8)
     json = Encryption.encryptDecryptXOR(json);
 
     // Return a response with status 200 and JSON as type
@@ -77,6 +77,10 @@ public class ProductEndpoints {
 
     // Return the data to the user
     if (createdProduct != null) {
+      /*Added - If a product is created i force an update of my cache, so the new user is implemented -
+      ProductController TO DO(101,8)*/
+      productCache.getProducts(true);
+
       // Return a response with status 200 and JSON as type
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
     } else {

@@ -6,13 +6,14 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 
 import cache.UserCache;
-import com.auth0.jwt.JWTVerifier;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import model.User;
 import utils.Hashing;
 import utils.Log;
 
+//Added - To make tokens possible - UserEndpoints TO DO(99,6)
+import com.auth0.jwt.JWTVerifier;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;
@@ -127,7 +128,7 @@ public class UserController {
             + "', '"
             + user.getLastname()
             + "', '"
-            //Added - Hashing the users password before saving it when a user is created
+            //Added - Hashing the users password before saving it when a user is created - UserController TO DO(124,6)
             + Hashing.shaSalt(user.getPassword())
             + "', '"
             + user.getEmail()
@@ -143,11 +144,10 @@ public class UserController {
       return null;
     }
 
-    // Return user
     return user;
   }
 
-  //Added - Deleting a user in the database
+  //Added - Deleting a user in the database - UserEndpoints TO DO(120,6)
   public static boolean delete(int id)
   {
     // Write in log that we've reach this step
@@ -158,6 +158,7 @@ public class UserController {
       dbCon = new DatabaseController();
     }
 
+    //Added - Initializing the users information to the information we get from the users id in the path
     User user = UserController.getUser(id);
 
     if (user != null)
@@ -171,7 +172,7 @@ public class UserController {
     }
   }
 
-  //Added - Updating af user in the database
+  //Added - Updating af user in the database - UserEndpoints TO DO(154,6)
   public static boolean update(User user ,int id)
   {
     // Write in log that we've reach this step
@@ -183,6 +184,7 @@ public class UserController {
       dbCon = new DatabaseController();
     }
 
+    //Added - Checks if the user has been initialized, and updates if so
     if (user != null)
     {
       dbCon.deleteUpdate("UPDATE user SET first_name ='" + user.getFirstname() +
@@ -222,11 +224,13 @@ public class UserController {
 
         try
         {
+          //Added - Implementing JWT token - UserEndpoints TO DO(99,6)
           Algorithm algorithm = Algorithm.HMAC256("JWT_token_key");
 
-          //Added - Makes sure that a new token is created every time a user is logged in
-          String token = JWT.create().withIssuer("auth0").withClaim("test", user.getId()).withClaim("JWT_token_key_test", timestamp).sign(algorithm);
+          //Added - Makes sure that a new token is created every time a user is logged in - UserEndpoints TO DO(99,6)
+          String token = JWT.create().withIssuer("auth0").withClaim("token", user.getId()).withClaim("JWT_token", timestamp).sign(algorithm);
 
+          //Added - Sets the token to the user object - UserEndpoints TO DO(99,6)
           user.setToken(token);
 
           return token;
@@ -242,7 +246,7 @@ public class UserController {
     return null;
   }
 
-  //Added - Makes it possible to verify a user through a token
+  //Added - Makes it possible to verify a user through a token - UserEndpoints TO DO(99,6)
   public static DecodedJWT verifier(String user) {
 
     Log.writeLog(UserController.class.getName(), user, "Verifying a token", 0);
@@ -250,8 +254,9 @@ public class UserController {
     String token = user;
 
     try {
+      //Added - Implementing JWT token
       Algorithm algorithm = Algorithm.HMAC256("JWT_token_key");
-      //Reusable verifier instance
+      //Added - Verifying my token
       JWTVerifier verifier = JWT.require(algorithm).withIssuer("auth0").build();
       DecodedJWT jwt = verifier.verify(token);
 

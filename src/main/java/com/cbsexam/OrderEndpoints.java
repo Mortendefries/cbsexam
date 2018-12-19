@@ -17,7 +17,8 @@ import utils.Encryption;
 @Path("order")
 public class OrderEndpoints {
 
-  //Tilføjet - Opretter en instans af cachen når OrderEndpoints bliver initialiseret, hvilket den kun bliver en gang
+  /*Added - Creates an instance of the cache when OrderEndpoint is initialized, which is only happening once -
+  OrderCache TO DO(9,3)*/
   private static OrderCache orderCache = new OrderCache();
 
   /**
@@ -34,7 +35,7 @@ public class OrderEndpoints {
     // TODO: Add Encryption to JSON FIX
     // We convert the java object to json with GSON library imported in Maven
     String json = new Gson().toJson(order);
-    //Tilføjet
+    //Added - Makes the order information encrypted - OrderEndpoints TO DO (35,8)
     json = Encryption.encryptDecryptXOR(json);
 
     // Return a response with status 200 and JSON as type
@@ -46,13 +47,13 @@ public class OrderEndpoints {
   @Path("/")
   public Response getOrders() {
 
-    // Call our controller-layer in order to get the order from the DB
+    //Added - Instead of creating a connnection to the DB i use my cache - OrderCache TO DO(9,3)
     ArrayList<Order> orders = orderCache.getOrders(true);
 
     // TODO: Add Encryption to JSON FIX
     // We convert the java object to json with GSON library imported in Maven
     String json = new Gson().toJson(orders);
-    //Tilføjet
+    //Added - Makes the order information encrypted - OrderEndpoints TO DO (53,8)
     json = Encryption.encryptDecryptXOR(json);
 
     // Return a response with status 200 and JSON as type
@@ -75,6 +76,9 @@ public class OrderEndpoints {
 
     // Return the data to the user
     if (createdOrder != null) {
+      //Added - If a product is created i force an update of my cache, so the new user is implemented - OrderCache TO DO(9,3)
+      orderCache.getOrders(true);
+
       // Return a response with status 200 and JSON as type
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(json).build();
     } else {

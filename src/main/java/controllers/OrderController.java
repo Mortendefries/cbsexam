@@ -27,7 +27,8 @@ public class OrderController {
       dbCon = new DatabaseController();
     }
 
-    // Build SQL string to query
+    /*Added - To get rid of nested queries, i have added this statement which gets the information from the DB
+    one time, instead of getting the information two times*/
     String sql = "SELECT *, billing.street_address as billing, shipping.street_address as shipping\n " +
             "FROM orders\n " +
             "JOIN user on orders.user_id = user.id\n " +
@@ -35,7 +36,7 @@ public class OrderController {
             "ON orders.billing_address_id = billing.id\n " +
             "LEFT JOIN address as shipping\n " +
             "ON orders.shipping_address_id = shipping.id\n " +
-            "WHERE orders.id " + id;
+            "WHERE orders.id = " + id;
 
     // Do the query in the database and create an empty object for the results
     ResultSet rs = dbCon.query(sql);
@@ -47,6 +48,7 @@ public class OrderController {
       {
         ArrayList<LineItem> lineItems = LineItemController.getLineItemsForOrder(rs.getInt("id"));
 
+        //Added - Create an object instance of user from tbe DB data
         User user = new User(
                 rs.getInt("id"),
                 rs.getString("first_name"),
@@ -56,6 +58,7 @@ public class OrderController {
                 rs.getLong("created_at")
         );
 
+        //Added - Create an object instance of address from tbe DB data
         Address billingAddress = new Address(
                 rs.getInt("billing_address_id"),
                 rs.getString("name"),
@@ -64,6 +67,7 @@ public class OrderController {
                 rs.getString("zipcode")
         );
 
+        //Added - Create an object instance of address from tbe DB data
         Address shippingAddress = new Address(
                 rs.getInt("shipping_address_id"),
                 rs.getString("name"),
@@ -72,7 +76,7 @@ public class OrderController {
                 rs.getString("zipcode")
         );
 
-        // Create an objeect instance of order from tbe DB data
+        // Create an object instance of order from tbe DB data
         order = new Order(
                 rs.getInt("id"),
                 user,
@@ -98,46 +102,6 @@ public class OrderController {
     return order;
   }
 
-    /*// Build SQL string to query
-    String sql = "SELECT * FROM orders where id=" + id;
-
-    // Do the query in the database and create an empty object for the results
-    ResultSet rs = dbCon.query(sql);
-    Order order = null;
-
-    try {
-      if (rs.next()) {
-
-        // Perhaps we could optimize things a bit here and get rid of nested queries.
-        User user = UserController.getUser(rs.getInt("user_id"));
-        ArrayList<LineItem> lineItems = LineItemController.getLineItemsForOrder(rs.getInt("id"));
-        Address billingAddress = AddressController.getAddress(rs.getInt("billing_address_id"));
-        Address shippingAddress = AddressController.getAddress(rs.getInt("shipping_address_id"));
-
-        // Create an object instance of order from the database data
-        order =
-            new Order(
-                rs.getInt("id"),
-                user,
-                lineItems,
-                billingAddress,
-                shippingAddress,
-                rs.getFloat("order_total"),
-                rs.getLong("created_at"),
-                rs.getLong("updated_at"));
-
-        // Returns the build order
-        return order;
-      } else {
-        System.out.println("No order found");
-      }
-    } catch (SQLException ex) {
-      System.out.println(ex.getMessage());
-    }
-
-    // Returns null
-    return order;*/
-
   /**
    * Get all orders in database
    *
@@ -149,7 +113,8 @@ public class OrderController {
       dbCon = new DatabaseController();
     }
 
-    // Build SQL string to query
+    /*Added - To get rid of nested queries, i have added this statement which gets the information from the DB
+    one time, instead of getting the information two times*/
     String sql = "SELECT *, billing.street_address as billing, shipping.street_address as shipping\n " +
             "FROM orders\n " +
             "JOIN user on orders.user_id = user.id\n " +
@@ -160,7 +125,7 @@ public class OrderController {
 
     // Do the query in the database and create an empty object for the results
     ResultSet rs = dbCon.query(sql);
-    ArrayList<Order> orders =new ArrayList<>();
+    ArrayList<Order> orders = new ArrayList<>();
 
     try
     {
@@ -168,6 +133,7 @@ public class OrderController {
       {
         ArrayList<LineItem> lineItems = LineItemController.getLineItemsForOrder(rs.getInt("id"));
 
+        //Added - Create an object instance of user from tbe DB data
         User user = new User(
                 rs.getInt("id"),
                 rs.getString("first_name"),
@@ -177,6 +143,7 @@ public class OrderController {
                 rs.getLong("created_at")
         );
 
+        //Added - Create an object instance of address from tbe DB data
         Address billingAddress = new Address(
                 rs.getInt("billing_address_id"),
                 rs.getString("name"),
@@ -185,6 +152,7 @@ public class OrderController {
                 rs.getString("zipcode")
         );
 
+        //Added - Create an object instance of address from tbe DB data
         Address shippingAddress = new Address(
                 rs.getInt("shipping_address_id"),
                 rs.getString("name"),
@@ -214,44 +182,6 @@ public class OrderController {
     }
 
     return orders;
-
-    /*//Added - Changed the name from "order" to "orders" to make it the same as in the DB
-    String sql = "SELECT * FROM orders";
-
-    ResultSet rs = dbCon.query(sql);
-    ArrayList<Order> orders = new ArrayList<Order>();
-
-    try {
-      while(rs.next()) {
-
-        // Perhaps we could optimize things a bit here and get rid of nested queries.
-        User user = UserController.getUser(rs.getInt("user_id"));
-        ArrayList<LineItem> lineItems = LineItemController.getLineItemsForOrder(rs.getInt("id"));
-        Address billingAddress = AddressController.getAddress(rs.getInt("billing_address_id"));
-        Address shippingAddress = AddressController.getAddress(rs.getInt("shipping_address_id"));
-
-        // Create an order from the database data
-        Order order =
-            new Order(
-                rs.getInt("id"),
-                user,
-                lineItems,
-                billingAddress,
-                shippingAddress,
-                rs.getFloat("order_total"),
-                rs.getLong("created_at"),
-                rs.getLong("updated_at"));
-
-        // Add order to our list
-        orders.add(order);
-
-      }
-    } catch (SQLException ex) {
-      System.out.println(ex.getMessage());
-    }
-
-    // return the orders
-    return orders;*/
   }
 
   public static Order createOrder(Order order) {
@@ -270,12 +200,12 @@ public class OrderController {
 
     // TODO: Enable transactions in order for us to not save the order if somethings fails for some of the other inserts. FIX
 
-    //Added - To create a connection to the DB
+    //Added - To create a connection to the DB - OrderController TO DO(201,8)
     Connection connection = DatabaseController.getConnection();
 
     try
     {
-      //Added - Makes sure that updates does'nt gets committed automatically
+      //Added - Makes sure that updates does not gets committed automatically - OrderController TO DO(201,8)
       connection.setAutoCommit(false);
 
       // Save addresses to database and save them back to initial order instance
@@ -319,21 +249,25 @@ public class OrderController {
 
       order.setLineItems(items);
 
-      //Added - Commits the transaction
+      //Added - Commits the transaction - OrderController TO DO(201,8)
       connection.commit();
 
     }
     catch (SQLException e1) {
       try {
-        //Added - If there is an error in the transaction, this makes sure that it is cancelled
+        /*Added - If there is an error in the transaction, this makes sure that it is cancelled -
+        OrderController TO DO(201,8)*/
         connection.rollback();
 
         System.out.println("Rollback");
 
-        //Added - If a rollback isn't possible, i will use this catch to print a message about it
+        /*Added - If a rollback isn't possible, i will use this catch to print a message about it -
+        OrderController TO DO(201,8)*/
       } catch (SQLException e2) {
         System.out.println("No rollback" + e2.getMessage());
-        //Added - A finally block is added to make sure that the autocommit is changed back to true
+
+        /*Added - A finally block is added to make sure that the autocommit is changed back to true -
+        OrderController TO DO(201,8)*/
       } finally
       {
         try

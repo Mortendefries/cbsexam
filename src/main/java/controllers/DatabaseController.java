@@ -110,7 +110,7 @@ public class DatabaseController {
     return result;
   }
 
-  //Added - Makes it possible to delete and update from the database
+  //Added - Makes it possible to delete and update from the database - UserEndpoints TO DO(122,6) and TO DO(156,6)
   public boolean deleteUpdate(String sqlStatement)
   {
     // Check if we have a connection

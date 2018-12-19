@@ -1,3 +1,4 @@
+/*
 {
   "DATABASE_HOST" : "localhost",
   "DATABASE_PORT" : 3306,
@@ -10,4 +11,4 @@
   "SOLR_PATH" : "solr",
   "SOLR_CORE" : "cbsexam",
   "PRODUCT_TTL" : 3600
-}
+}*/

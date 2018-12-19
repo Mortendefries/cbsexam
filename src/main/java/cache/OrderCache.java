@@ -6,9 +6,10 @@ import utils.Config;
 
 import java.util.ArrayList;
 
-//TODO: Build this cache and use it. FIX - OrderEndpoints line 55
+//TODO: Build this cache and use it. FIX
+//Added - Whole class is added to make caching of the orders possible - OrderCache TO DO(9,3)
 public class OrderCache {
-    // List of orders
+
     private ArrayList<Order> orders;
 
     // Time cache should live
@@ -27,7 +28,7 @@ public class OrderCache {
         // Otherwise we look at the age of the cache and figure out if we should update.
         // If the list is empty we also check for new orders
         if (forceUpdate
-                || ((this.created + this.ttl) >= (System.currentTimeMillis() / 1000L))
+                || ((this.created + this.ttl) <= (System.currentTimeMillis() / 1000L))
                 //Added - Instead of .isEmpty() i check if the list is == null
                 || this.orders == null) {
 

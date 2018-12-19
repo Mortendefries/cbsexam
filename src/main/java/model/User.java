@@ -10,7 +10,7 @@ public class User {
   public String email;
   private String password;
   private long createdTime;
-  //Added
+  //Added - Creates the attribute token - UserEndpoints TO DO(99,6)
   private String token;
 
   public User(int id, String firstname, String lastname, String password, String email, Long createdTime) {
@@ -70,12 +70,12 @@ public class User {
     this.createdTime = createdTime;
   }
 
-  //Added
+  //Added - get method added to the attribute token - UserEndpoints TO DO(99,6)
   public String getToken() {
     return token;
   }
 
-  //Added
+  //Added - set method added to the attribute token - UserEndpoints TO DO(99,6)
   public void setToken(String token) {
     this.token = token;
   }

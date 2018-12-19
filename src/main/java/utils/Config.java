@@ -20,23 +20,23 @@ public final class Config {
   private static String SOLR_PATH;
   private static String SOLR_CORE;
   private static long PRODUCT_TTL;
-  //Added - To make UserCache possible
+  //Added - To make UserCache possible - UserCache TO DO(9,3)
   private static long USER_TTL;
-  //Added - To make OrderCache possible
+  //Added - To make OrderCache possible - OrderCache TO DO(9,3)
   private static long ORDER_TTL;
-  //Added - Makes the encryption more complex - TO DO(11,10)
+  //Added - Makes the encryption more complex - Encryption TO DO(11,10)
   private static String ENCRYPTION_KEY;
 
   public static long getProductTtl() {
     return PRODUCT_TTL;
   }
 
-  //Added - To make UserCache possible
+  //Added - To make UserCache possible - UserCache TO DO(9,3)
   public static long getUserTtl(){
     return USER_TTL;
   }
 
-  //Added - To make OrderCache possible
+  //Added - To make OrderCache possible - OrderCache TO DO(9,3)
   public static long getOrderTtl(){
     return ORDER_TTL;
   }
@@ -45,7 +45,7 @@ public final class Config {
     return DATABASE_HOST;
   }
 
-  //Added - Makes the encryption more complex - TO DO(11,10)
+  //Added - Makes the encryption more complex - Encryption TO DO(11,10)
   public static char[] getEncryptionKey() {
     return ENCRYPTION_KEY.toCharArray();
   }
@@ -105,7 +105,7 @@ public final class Config {
       stringBuffer.append(str);
     }
 
-    //Konverterer json til variabler ved at typecaste til JsonObject
+    // Konverterer json til variabler ved at typecaste til JsonObject
     json = (JsonObject) parser.parse(stringBuffer.toString());
 
     // Hiv teksten ud og sæt klassens variable til senere brug
@@ -120,7 +120,11 @@ public final class Config {
     SOLR_PATH = json.get("SOLR_PATH").toString().replace("\"", "");
     SOLR_CORE = json.get("SOLR_CORE").toString().replace("\"", "");
     PRODUCT_TTL = json.get("PRODUCT_TTL").getAsLong();
-    //Added - Makes the encryption more complex - TO DO(11,10)
+    //Added - To make OrderCache possible - UserCache TO DO(9,3)
+    USER_TTL = json.get("USER_TTL").getAsLong();
+    //Added - To make OrderCache possible - OrderCache TO DO(9,3)
+    ORDER_TTL = json.get("ORDER_TTL").getAsLong();
+    //Added - Makes the encryption more complex - Encryption TO DO(11,10)
     ENCRYPTION_KEY = json.get("ENCRYPTION_KEY").getAsString();
   }
 }

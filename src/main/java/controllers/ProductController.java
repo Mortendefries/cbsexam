@@ -98,7 +98,7 @@ public class ProductController {
       dbCon = new DatabaseController();
     }
 
-    // TODO: Use caching layer. FIX - ProductEndpoints line 56
+    // TODO: Use caching layer. FIX
     String sql = "SELECT * FROM product";
 
     ResultSet rs = dbCon.query(sql);
@@ -109,7 +109,7 @@ public class ProductController {
         Product product =
             new Product(
                 rs.getInt("id"),
-                //Added - Changed the so it is the same as in the DB
+                //Added - Changed it so it is the same as in the DB
                 rs.getString("product_name"),
                 rs.getString("sku"),
                 rs.getFloat("price"),

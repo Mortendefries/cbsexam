@@ -7,12 +7,12 @@ import org.bouncycastle.util.encoders.Hex;
 
 public final class Hashing {
 
-  //Tilføjet
+  //Added
   private String salt;
   private static MessageDigest hashing;
 
   // TODO: You should add a salt and make this secure FIX
-  //Tilføjet for at tilføje salt til kodeordet i md5
+  //Added - Adds salt to the md5 hashing - Hashing TO DO(14,6)
   public static String md5Salt (String str) {
     String salt = "dsf89sd8897dsf78ds";
     String hashedPassword = str + salt;
@@ -49,7 +49,7 @@ public final class Hashing {
   }
 
   // TODO: You should add a salt and make this secure FIX
-  //Added - To add salt to the password in sha
+  //Added - Adds salt to the password in sha - Hashing TO DO(51,6)
   public static String shaSalt (String str) {
     String salt = "dsf89sd8897dsf78ds";
     String hashedPassword = str + salt;
@@ -73,12 +73,6 @@ public final class Hashing {
     } catch (NoSuchAlgorithmException e) {
       e.printStackTrace();
     }
-
-    /*String hashedPassword = rawString + this.salt;
-    return hash(hashedPassword);*/
-
-    /*Tilføjet
-    return Hashing.performHashing(rawString);*/
 
     return rawString;
   }
