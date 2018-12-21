@@ -22,6 +22,13 @@ public class DatabaseController {
    * @return a Connection object
    */
   public static Connection getConnection() {
+    /*Added - Due to an 8 hour timer at my SQL server, i have added this to renew the connection if it has timed out.
+    The ideal solution would have been to closing my connection after each statement in my controllers, but i
+    could not make it work due to time pressure*/
+    if (connection != null) {
+      return connection;
+    }
+
     try {
       // Set the database connect with the data from the config
       String url =

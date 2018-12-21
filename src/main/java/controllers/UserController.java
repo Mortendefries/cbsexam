@@ -225,10 +225,10 @@ public class UserController {
         try
         {
           //Added - Implementing JWT token - UserEndpoints TO DO(99,6)
-          Algorithm algorithm = Algorithm.HMAC256("JWT_token_key");
+          Algorithm algorithm = Algorithm.HMAC256("token");
 
           //Added - Makes sure that a new token is created every time a user is logged in - UserEndpoints TO DO(99,6)
-          String token = JWT.create().withIssuer("auth0").withClaim("token", user.getId()).withClaim("JWT_token", timestamp).sign(algorithm);
+          String token = JWT.create().withIssuer("auth0").withClaim("id", user.getId()).withClaim("timestamp", timestamp).sign(algorithm);
 
           //Added - Sets the token to the user object - UserEndpoints TO DO(99,6)
           user.setToken(token);
@@ -255,7 +255,7 @@ public class UserController {
 
     try {
       //Added - Implementing JWT token
-      Algorithm algorithm = Algorithm.HMAC256("JWT_token_key");
+      Algorithm algorithm = Algorithm.HMAC256("token");
       //Added - Verifying my token
       JWTVerifier verifier = JWT.require(algorithm).withIssuer("auth0").build();
       DecodedJWT jwt = verifier.verify(token);

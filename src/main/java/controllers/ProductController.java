@@ -158,7 +158,7 @@ public class ProductController {
     if (productID != 0) {
       //Update the productid of the product before returning
       product.setId(productID);
-    } else{
+    } else {
       // Return null if product has not been inserted into database
       return null;
     }

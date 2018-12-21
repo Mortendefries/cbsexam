@@ -112,6 +112,7 @@ public class UserEndpoints {
     /*Added - Checks if the user has a token value (if a token is assigned above), if so the user is then logged in
     and a token is send - UserEndpoints TO DO(101,6)*/
     if (token != null) {
+      //Added - I only return a token to make testing with a token possible
       return Response.status(200).type(MediaType.APPLICATION_JSON_TYPE).entity(token).build();
     }
     else {
@@ -129,10 +130,10 @@ public class UserEndpoints {
     DecodedJWT token = UserController.verifier(typedToken);
 
     //Added - Compares the typed token with the typed id
-    if (token.getClaim("token").asInt() == typedId)
+    if (token.getClaim("id").asInt() == typedId)
     {
       //Added - Creates a boolean, so we can check if the delete can be completed
-      Boolean delete = UserController.delete(token.getClaim("token").asInt());
+      Boolean delete = UserController.delete(token.getClaim("id").asInt());
 
       if (delete)
       {
@@ -155,7 +156,7 @@ public class UserEndpoints {
 
   // TODO: Make the system able to update users FIX
   //Added - Class is added to make it possible to update a user - UserEndpoints TO DO(156,6)
-  @POST
+  @PUT
   @Path("/update/{idUser}/{token}")
   public Response updateUser(@PathParam("idUser") int typedId, @PathParam("token") String typedToken, String body) {
 
@@ -166,10 +167,10 @@ public class UserEndpoints {
     DecodedJWT token = UserController.verifier(typedToken);
 
     //Added - Compares the typed token with the typed id
-    if (token.getClaim("token").asInt() == typedId)
+    if (token.getClaim("id").asInt() == typedId)
     {
       //Added - Creates a boolean, so we can check if the update can be completed
-      Boolean update = UserController.update(user, token.getClaim("token").asInt());
+      Boolean update = UserController.update(user, token.getClaim("id").asInt());
 
       if(update) {
       //Added - I got to update our ArrayList because we have updated a user - UserCache TO DO(9,3)

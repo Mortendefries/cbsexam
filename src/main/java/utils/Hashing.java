@@ -14,7 +14,7 @@ public final class Hashing {
   // TODO: You should add a salt and make this secure FIX
   //Added - Adds salt to the md5 hashing - Hashing TO DO(14,6)
   public static String md5Salt (String str) {
-    String salt = "dsf89sd8897dsf78ds";
+    String salt = "dsf89sd889";
     String hashedPassword = str + salt;
     return md5(hashedPassword);
   }
